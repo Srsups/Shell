@@ -65,6 +65,8 @@ void sigintHandler(int sig_num)
     signal(SIGINT, sigintHandler);
     fflush(stdout);
 }
+
+// Função para limpar variáveis globais
 void clear_variables()
 {
   fd =0;
@@ -83,6 +85,7 @@ void clear_variables()
   bang_flag=0;
 }
   
+// Função para processar o arquivo de histórico  
 void fileprocess ()
 {
   int fd;
@@ -114,6 +117,8 @@ void fileprocess ()
     while (bytes_read == sizeof (buffer)); 
     close (fd); 
 }
+
+// Função para escrever no arquivo de histórico
 void filewrite()
 {
   
@@ -139,6 +144,8 @@ void filewrite()
   close(fd_out);
 
 }
+
+// Função para executar comandos "bang" (!)
 void bang_execute()
 {
   char bang_val[1000];
@@ -179,6 +186,7 @@ void bang_execute()
     
 }
 
+// Função para lidar com variáveis de ambiente
 void environmment()
 {
   int i =1, index=0;
@@ -197,6 +205,7 @@ void environmment()
   else printf("%s\n", value);
 }
 
+// Função para definir variáveis de ambiente
 void set_environment_variables()
 {  
 int n=1;
@@ -218,8 +227,7 @@ left_right[n]=NULL;
 setenv(left_right[0], left_right[1], 0);
 }
 
-
- 
+// Função para mudar de diretório
 void change_directory()
 {
 char *h="/home";   
@@ -232,6 +240,7 @@ else if(chdir(args[1])<0)
 
 }
 
+// Função para imprimir o diretório atual
 void parent_directory()
 {
 if (getcwd(cwd, sizeof(cwd)) != NULL)
@@ -240,9 +249,9 @@ if (getcwd(cwd, sizeof(cwd)) != NULL)
         }
 else
        perror("getcwd() error");
-
-
 }
+
+// Função para o comando echo
 void echo_calling(char *echo_val)
 {
   int i=0, index=0;
@@ -318,6 +327,8 @@ else {
                 }
     }  
 }
+
+// Função para executar o histórico
 void history_execute_with_constants()
 {
   int num, i, start_index;
@@ -349,11 +360,15 @@ void history_execute_with_constants()
       } 
 
 }
+
+// Função para remover espaços em branco
 static char* skipwhite(char* s)
 {
   while (isspace(*s)) ++s;
   return s;
 }
+
+// Função para dividir comandos em argumentos
 void tokenise_commands(char *com_exec)
 {
 int m=1;
@@ -361,6 +376,8 @@ args[0]=strtok(com_exec," ");
 while((args[m]=strtok(NULL," "))!=NULL)
         m++;
 }
+
+// Função para dividir comandos com redirecionamento de entrada e saída
 void tokenise_redirect_input_output(char *cmd_exec)
 {
   char *io_token[100];
@@ -377,6 +394,8 @@ void tokenise_redirect_input_output(char *cmd_exec)
   tokenise_commands(io_token[0]);
   
 }
+
+// Função para dividir comandos com redirecionamento de entrada
 void tokenise_redirect_input(char *cmd_exec)
 {
   char *i_token[100];
@@ -390,6 +409,8 @@ void tokenise_redirect_input(char *cmd_exec)
   input_redirection_file=strdup(i_token[1]);
   tokenise_commands(i_token[0]);
 }
+
+// Função para dividir comandos com redirecionamento de saída
 void tokenise_redirect_output(char *cmd_exec)
 {
   char *o_token[100];
@@ -404,6 +425,8 @@ void tokenise_redirect_output(char *cmd_exec)
   tokenise_commands(o_token[0]);   
   
 }
+
+// Função para remover aspas
 char* skipcomma(char* str)
 {
   int i=0, j=0;
@@ -418,6 +441,8 @@ char* skipcomma(char* str)
   
   return str;
 }
+
+// Função para dividir e executar comandos
 static int split(char *cmd_exec, int input, int first, int last)
 {
     char *new_cmd_exec1;  
@@ -459,7 +484,7 @@ static int split(char *cmd_exec, int input, int first, int last)
     return command(input, first, last, new_cmd_exec1);
 }
 
-
+// Função para executar comandos com pipe
 void with_pipe_execute()
 {
 
@@ -484,6 +509,8 @@ input=0;
 return;
 
 }
+
+// Função para executar o comando cat
 void execute_cat()
 {
     char buffer[1024];
@@ -505,6 +532,7 @@ void execute_cat()
     }
 }
 
+// Função para executar comandos
 static int command(int input, int first, int last, char *cmd_exec)
 {
     int mypipefd[2], ret, input_fd, output_fd;
@@ -624,6 +652,7 @@ static int command(int input, int first, int last, char *cmd_exec)
     return mypipefd[0];
 }
 
+//Pega o prompt de comando digitado pelo usuário
 void prompt()
 {
   char shell[1000];
@@ -640,6 +669,7 @@ void prompt()
 
 }
 
+//Executa os comandos separados por '&' concorrentemente
 void execute_concurrent_commands(char *input) {
     char *concurrent_cmds[MAX_CMD_EXEC];
     int n = 1;
