@@ -3,7 +3,7 @@
 Este é um shell simples escrito em C que suporta comandos básicos do Unix, redirecionamento de entrada e saída, pipes, histórico de comandos e execução de comandos concorrentes.
 
 ## Funcionalidades
-- **Comandos Internos**: `cd`, `pwd`, `echo`, `export`, `history`, `cat`,  `path`
+- **Comandos Internos**: `cd`, `pwd`, `echo`, `export`, `history`, `cat`,  `path`, `clear`, `exit`, `ls`
 - **Redirecionamento de Entrada/Saída**: `<`, `>`
 - **Pipes**: `|`
 - **Comandos Concorrentes**: `&`
