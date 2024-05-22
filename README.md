@@ -20,4 +20,6 @@ gcc -o <NomeDoArquivo> <NomeDoArquivo>.c
 
 Para executar utilize o seguinte comando:
 
+```
 ./<NomeDoArquivo>
+````
