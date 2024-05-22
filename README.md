@@ -12,5 +12,12 @@ Este é um shell simples escrito em C que suporta comandos básicos do Unix, red
 ## Compilação
 
 Para compilar o shell, use o seguinte comando:
-```bash
+```
 gcc -o <NomeDoArquivo> <NomeDoArquivo>.c
+````
+
+## Execução
+
+Para executar utilize o seguinte comando:
+
+./<NomeDoArquivo>
