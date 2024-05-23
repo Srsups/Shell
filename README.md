@@ -30,7 +30,11 @@ Para executar utilize o seguinte comando:
 ### CD
 
 ```
-o comando cd  é usado para mudar o diretório de trabalho atual, tendo variações, como: `cd ..`, `cd /<DiretórioEspecífico`, ou simplesmente `cd`
+o comando cd  é usado para mudar o diretório de trabalho atual, tendo variações, como:
+`cd ..`
+`cd /<DiretórioEspecífico`
+ou simplesmente
+`cd`
 ```
 
 ### PWD
@@ -48,8 +52,10 @@ o comando echo vai ler o que foi escrito no terminal e vai printá-lo logo abaix
 ### EXPORT
 
 ```
-O comando export é usado para definir variáveis de ambiente ou tornar as variáveis de shell disponíveis para subprocessos, por exemplo,ao usar o coamndo:
+O comando export é usado para definir variáveis de ambiente ou tornar as variáveis de shell disponíveis para subprocessos, por exemplo,ao usar o comando:
+
 `export nome_da_variavel=valor`
+
 você estará definindo a variável 'NOME_VARIAVEL' com o valor 'valor' e a exportando, tornando-a disponível para qualquer subprocesso iniciado a partir do shell atual
 ```
 
