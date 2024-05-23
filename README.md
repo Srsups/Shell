@@ -25,3 +25,7 @@ Para executar utilize o seguinte comando:
 ```
 ./shell
 ````
+
+## Problemas conhecidos
+
+Há uma implementação do comando batch, porém, se um arquivo de texto com mais de 1 ou 2 comandos for executado utilizando o batch, há altas chances do programa causar erros, neste caso limpe todo o conteúdo do 'history.txt'.
