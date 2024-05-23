@@ -15,7 +15,7 @@ Este é um shell simples escrito em C que suporta comandos básicos do Unix, red
 
 Para compilar o shell, use o seguinte comando:
 ```
-gcc -o <NomeDoArquivo> <NomeDoArquivo>.c
+gcc -o shell main.c
 ````
 
 ## Execução
@@ -23,5 +23,5 @@ gcc -o <NomeDoArquivo> <NomeDoArquivo>.c
 Para executar utilize o seguinte comando:
 
 ```
-./<NomeDoArquivo>
+./shell
 ````
