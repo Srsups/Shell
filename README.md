@@ -1,6 +1,4 @@
 # Shell
-Um protótipo de terminal shell capaz de executar comandos básicos
-# Shell
 
 Este é um shell simples escrito em C que suporta comandos básicos do Unix, redirecionamento de entrada e saída, pipes, histórico de comandos e execução de comandos concorrentes.
 
