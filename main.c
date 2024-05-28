@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <ctype.h>
+#include <dirent.h>
+#include <limits.h>
 
 #define MAX_ARGS 512
 #define MAX_HISTORY 1000
@@ -34,6 +37,7 @@ char history_data[1000][1000];
 char current_directory[1000];
 char ret_file[3000];
 char his_var[2000];
+int input_redirection = 0, output_redirection = 0;
 char *input_redirection_file;
 char *output_redirection_file;
 extern char** environ;
@@ -620,14 +624,7 @@ static int command(int input, int first, int last, char *cmd_exec)
         }
         else if (strcmp(args[0], "path") == 0) 
         {
-            for (char **env = environ; *env != 0; env++) 
-            {
-                if (strncmp(*env, "PATH=", 5) == 0) 
-                {
-                    printf("%s\n", *env + 5);
-                    break;
-                }
-            }
+            path_execute();
         }
         else if (strcmp(args[0], "cat") == 0)
         {
@@ -709,25 +706,130 @@ void execute_concurrent_commands(char *input) {
     }
 }
 
-int main() {
-    getcwd(current_directory, sizeof(current_directory));
-    signal(SIGINT, sigintHandler);
-    while (1) {
-        clear_variables();
-        prompt();
-        fgets(input_buffer, MAX_INPUT_BUFFER, stdin);
-        if (input_buffer[0] == '\n')
-            continue;
-        len = strlen(input_buffer);
-        input_buffer[len - 1] = '\0';
+void execute_ls() {
+    DIR *d;
+    struct dirent *dir;
+    char *path = ".";  // Diretório atual
 
-        if (strchr(input_buffer, '&')) {
-            execute_concurrent_commands(input_buffer);
-        } else {
-            fileprocess();
-            filewrite();
-            with_pipe_execute();
+    if (args[1] != NULL) {
+        path = args[1];  // Se um caminho for fornecido como argumento
+    }
+
+    d = opendir(path);
+    if (d) {
+        while ((dir = readdir(d)) != NULL) {
+            // Ignora "." e ".."
+            if (strcmp(dir->d_name, ".") != 0 && strcmp(dir->d_name, "..") != 0) {
+                printf("%s\n", dir->d_name);
+            }
+        }
+        closedir(d);
+    } else {
+        perror("opendir");
+    }
+}
+
+// Função para lidar com o comando path
+void path_execute()
+{
+    if (args[1] == NULL) 
+    {
+        // Se nenhum argumento for fornecido, imprime o PATH genérico
+        for (char **env = environ; *env != 0; env++) 
+        {
+            if (strncmp(*env, "PATH=", 5) == 0) 
+            {
+                printf("%s\n", *env + 5);
+                break;
+            }
+        }
+    } 
+    else 
+    {
+        // Se um argumento for fornecido, verifica o caminho absoluto da pasta específica
+        char *dir = args[1];
+        char abs_path[PATH_MAX];
+        if (realpath(dir, abs_path) != NULL) 
+        {
+            printf("Caminho absoluto de %s: %s\n", dir, abs_path);
+        } 
+        else 
+        {
+            perror("Erro ao obter o caminho absoluto");
         }
     }
+}
+
+void execute_batch_file(const char *filename)
+{
+    FILE *file = fopen(filename, "r");
+    if (file == NULL)
+    {
+        perror("Erro ao abrir o arquivo batch");
+        return;
+    }
+
+    char line[1024];
+    while (fgets(line, sizeof(line), file))
+    {
+        // Remove a nova linha do final da linha, se existir
+        line[strcspn(line, "\n")] = 0;
+        // Divida a linha em argumentos e execute o comando
+        int input = 0, first = 1, last = 1;
+        command(input, first, last, line);
+    }
+
+    fclose(file);
+}
+
+
+int main()
+{
+    char *input;
+    char *cmd_exec;
+    size_t size = 1024;
+    char cwd[1024];
+    
+    input = (char *)malloc(size * sizeof(char));
+    if (input == NULL) 
+    {
+        perror("Unable to allocate buffer");
+        exit(1);
+    }
+
+    while (1) 
+    {
+        if (getcwd(cwd, sizeof(cwd)) != NULL) 
+        {
+            printf("%s$ ", cwd);
+        }
+        else 
+        {
+            perror("getcwd() error");
+            return 1;
+        }
+
+        getline(&input, &size, stdin);
+        input[strlen(input) - 1] = '\0'; // Remove a nova linha
+
+        if (strcmp(input, "exit") == 0) 
+        {
+            break;
+        }
+
+        // Verifica se o comando é um arquivo batch
+        if (strncmp(input, "./", 2) == 0 && strstr(input, ".batch") != NULL) 
+        {
+            execute_batch_file(input + 2);
+        } 
+        else 
+        {
+            cmd_exec = input;
+            int input_fd = 0, first = 1, last = 1;
+            command(input_fd, first, last, cmd_exec);
+        }
+    }
+
+    free(input);
     return 0;
 }
